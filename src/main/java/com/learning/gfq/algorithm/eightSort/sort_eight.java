@@ -1,4 +1,4 @@
-package com.learning.project.gfq.algorithm.sort;
+package com.learning.gfq.algorithm.eightSort;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,16 +9,16 @@ public class sort_eight {
 	public static void main(String[] args) {
 		
 		int[] arry = {2,54,1,23,6,234,2,32,234,234,2352,42342,3243423,234,234,234,3,2,3,4};
-		System.out.println(prac2_directly_insertion_sort(arry));
-		System.out.println(prac2_binary_insertion_sort(arry));
-		System.out.println(prac2_shell_sort(arry));
-		System.out.println(prac2_shell_sort_2(arry));
-		System.out.println(prac3_straight_select_sort(arry));
-		System.out.println(prac3_heap_sort(arry));
-		System.out.println(prac3_bubble_sort(arry));
-		System.out.println(prac3_quick_sort(arry));
+//		System.out.println(prac2_directly_insertion_sort(arry));
+//		System.out.println(prac2_binary_insertion_sort(arry));
+//		System.out.println(prac2_shell_sort(arry));
+//		System.out.println(prac2_shell_sort_2(arry));
+//		System.out.println(prac3_straight_select_sort(arry));
+//		System.out.println(prac3_heap_sort(arry));
+//		System.out.println(prac3_bubble_sort(arry));
+//		System.out.println(prac3_quick_sort(arry));
 		System.out.println(prac4_merge_sort(arry));
-		System.out.println(prac5_basic_sort(arry));
+//		System.out.println(prac5_basic_sort(arry));
 	}
 	
 	
@@ -366,8 +366,24 @@ public class sort_eight {
 	}
 	
 	//快速排序
+	/*
+	1、说明：
+		1、找出一个基准元素，记作A
+		2、遍历数组，把比A小的元素放在A左边，比A大的元素放在A右边
+		3、将A左边的所有元素作为一个数组，A右边的元素作为一个数组，分别对这两个数组重复1、2两步操作，直到排序完毕。
+	2、细节优化：
+		可否减少交换次数：398、401行，大于号写作大于等于号
+		可否减少比较次数：同上
+	3、复杂度：
+		时间复杂度：O(nlog2n)【想作二叉树的实现】
+		空间复杂度：O(1)
+	4、其他：
+	 	关于为什么必须先移动基点对向的指针的问题:
+	  	不管分什么情况讨论，在先动右指针的情况下，左指针应该都是停留在 <= 基点的位置;
+	 	如果反过来左指针就会停留在大于等于基点的位置;
+	*/
 	public static String prac3_quick_sort(int[] arry) {
-		if(arry.length <= 1) {
+		if(arry.length <= 1) {//鲁棒性
 			return Arrays.toString(arry);
 		}
 		quickSort(arry, 0, arry.length-1);
@@ -375,18 +391,19 @@ public class sort_eight {
 	}
 	
 	public static void quickSort(int[] arry, int left, int right) {
-		int begin =  left;
+		int begin =  left;//以下代码，设数组的左元素为基点,且左指针是必须在基点头上的
 		int end = right;
 		if(left > right) {
 			return;
 		}
-		while(left != right) {
-			while(right > left && arry[right] >= arry[begin]) {
+		while(left != right) {//while循环的写法，让代码更简洁
+			while(right > left && arry[right] >= arry[begin]) {//注：要先移动基点对侧的指针
 				right --;
 			}
-			while(left < right && arry[left] <= arry[begin]) {
+			while(left < right && arry[left] <= arry[begin]) {//再移动基点左侧的指针
 				left ++;
 			}
+			//交换基点和指针元素位置
 			int tmp = arry[right];
 			arry[right] = arry[left];
 			arry[left] = tmp;
@@ -394,60 +411,30 @@ public class sort_eight {
 		int tmpBase = arry[begin];
 		arry[begin] = arry[left];
 		arry[left] = tmpBase;
-		quickSort(arry, begin, left - 1);
-		quickSort(arry, left + 1, end);
+		quickSort(arry, begin, left - 1);//基点左侧元素作为一个数组进行排序
+		quickSort(arry, left + 1, end);//基点右侧元素作为一个数组进行排序
 	}
 
 
-	//尝试寻找快排的更优实现思路
-	/*
-	 * 优点：
-	 * 	1、将数组最左值和数组最右值作为参数传进去了，这样能保证递归时始终传递同一个数组对象，不用在返回时考虑赋值了
-	 *  2、在i、j指针遍历时，直接i指针从基点开始遍历，让遍历步骤写的更易读更简洁
-	 *  3、判断条件设置使用&&，同样让遍历判断的代码更加简洁
-	 *  4、使用多一个方法封装，实现本来外部就直接传进来一个数组就足够了，这件事。无需外部再传进来left、right值
-	 *
-	 * 关于为什么必须先移动基点对向的指针的问题:
-	 * 	不管分什么情况讨论，在先动右指针的情况下，左指针应该都是停留在 <=基点的位置;
-	 *  如果反过来左指针就会停留在大于等于基点的位置;
-	 */
-	public static void prac7_chongxie(int[] arry) {
-		if(arry.length <= 1) {
-			return;
-		}
-		quickSort2(arry, 0, arry.length - 1);
-		return;
-	}
-
-	public static void quickSort2(int[] arry, int left, int right) {
-		if(left > right) {
-			return;
-		}
-		int base = arry[left];
-		int i = left;
-		int j = right;
-		while(i != j) {
-			while(i < j && arry[j] >= base) {
-				j--;
-			}
-			while(i < j && arry[i] <= base) {
-				i++;
-			}
-			int tmp = arry[i];
-			arry[i] = arry[j];
-			arry[j] = tmp;
-		}
-		arry[left] = arry[i];
-		arry[i] = base;
-		quickSort(arry, left, i - 1);
-		quickSort(arry, i + 1, right);
-		return;
-	}
 	
 	
 	// prac4:归并排序----------------------------------------------
-	//https://blog.csdn.net/k_koris/article/details/80508543
-	//把一个数组切割为两个，只需要三个点即可
+	/*
+	1、说明：
+		1、先将大数组分割为小数组，分割至最小为止（一个数组一个元素）
+		2、再将小数组两两归并，归并时进行排序，每一个归并结果均是一个有序的小数组
+		3、不断归并，直至所有的小数组都合并完毕，即变成最开始的大数组，排序完毕
+	2、细节优化：
+		可否减少交换次数：未发现可优化的地方
+		可否减少比较次数：未发现可优化的地方
+	3、复杂度：
+		时间复杂度：O(nlog2n)
+		空间复杂度：O(n)
+	4、其他：
+		核心是分而治之的思想，这个排序，可以在多个机器上一起执行。
+		一个机器一部分数据，排序好之后，再到一起进行merge。
+	*/
+	// 把一个数组切割为两个，只需要三个点即可
 	public static String prac4_merge_sort(int[] arry) {
 		if(arry.length <= 1) {
 			return Arrays.toString(arry);
@@ -460,7 +447,7 @@ public class sort_eight {
 	 * 计算mid值时：
 	 * 当使用(left + right)/2的方式计算中间值时，由于整数向下取整，在递归到最后的时候，mid只能无限次等于left，且无限次小于right，因此mid在作为left值时至少+1
 	*/
-	public static void merge_sort(int[] arry, int left, int right) {
+	public static void merge_sort(int[] arry, int left, int right) {//大数组分割成小数组的工作
 		if(left >= right) {
 			return;
 		}
@@ -471,7 +458,11 @@ public class sort_eight {
 	}
 	
 	//mid这个值要分给left使用，这样在两个数组成的数组中可以做到两个数进行排序
-	public static void merge(int[] arry, int left, int mid, int right) {
+	public static void merge(int[] arry, int left, int mid, int right) {//小数组归并成大数组的工作
+		/*
+			1、创建新数组
+			2、将小数组排序，并放到新数组内
+		*/
 		if(left >= right) {
 			return;
 		}
@@ -480,25 +471,51 @@ public class sort_eight {
 		int l = left;
 		int m = mid + 1;
 		int r = right;
-		for(int i = 0; i < res.length; i++) {
-			/*
-			 * 前两个if：先判断左右两个数组是否某一个已被输出完，输出完则输出另一个数组
-			 * 若两数组未输出完，则比较值大小，输出其中更小的那个并移动更小的那个的指针
-			*/
-			if(l > mid) {
-				res[i] = arry[m];
-				m++;
-			}else if(m > right) {
-				res[i] = arry[l];
-				l++;
-			}else if(arry[l] < arry[m]) {
-				res[i] = arry[l];
-				l++;
-			}else if(arry[l] >= arry[m]){
-				res[i] = arry[m];
-				m++;
-			}
-		}
+
+		//while写法展示
+//		int k = 0;
+//		while(l <= mid && m <= right) {
+//			if(arry[l] < arry[m]) {
+//				res[k] = arry[l];
+//				l++;
+//				k++;
+//			}else {
+//				res[k] = arry[m];
+//				m++;
+//				k++;
+//			}
+//		}
+//		while(l <= mid) {
+//			res[k] = arry[l];
+//			l++;
+//			k++;
+//		}
+//		while (m <= right) {
+//			res[k] = arry[m];
+//			m++;
+//			k++;
+//		}
+		//for写法展示
+//		for(int i = 0; i < res.length; i++) {
+//			/*
+//			 * 前两个if：先判断左右两个数组是否某一个已被输出完，输出完则输出另一个数组
+//			 * 若两数组未输出完，则比较值大小，输出其中更小的那个并移动更小的那个的指针
+//			*/
+//			if(l > mid) {
+//				res[i] = arry[m];
+//				m++;
+//			}else if(m > right) {
+//				res[i] = arry[l];
+//				l++;
+//			}else if(arry[l] < arry[m]) {
+//				res[i] = arry[l];
+//				l++;
+//			}else if(arry[l] >= arry[m]){
+//				res[i] = arry[m];
+//				m++;
+//			}
+//		}
+		//赋值回去
 		for(int i = 0; i < res.length; i++) {
 			arry[left] = res[i];
 			left++;
@@ -506,9 +523,20 @@ public class sort_eight {
 	}
 	
 	// prac5：基数排序/桶排序
-	// 限用于正整数的数组排序
+	/*
+	1、说明：
+		按各个元素的个位、十位、百位……分别进行排序，直至排序结束。
+	2、细节优化：
+		可否减少交换次数：未发现可优化的地方
+		可否减少比较次数：未发现可优化的地方
+	3、复杂度：
+		时间复杂度：O(n)(transfer方法，10n)
+		空间复杂度：O(n)
+	4、其他：
+	*/
+
+	// 此写法，限用于正整数的数组排序
 	public static String prac5_basic_sort(int[] arry) {
-		
 		int times = findTimes(arry);
 		basic_sort(arry, times);
 		return Arrays.toString(arry);
@@ -530,7 +558,7 @@ public class sort_eight {
 	
 	public static void basic_sort(int[] arry, int times) {
 		ArrayList<LinkedList<Integer>> basicArray = new ArrayList<LinkedList<Integer>>();
-		for(int i = 0; i < 10; i++) {
+		for(int i = 0; i < 10; i++) {//初始化桶
 			basicArray.add(new LinkedList<Integer>());
 		}
 		int index = 1;
