@@ -536,6 +536,7 @@ public class sort_eight {
 	4、其他：
 	*/
 
+
 	// 此写法，限用于正整数的数组排序
 	public static String prac5_basic_sort(int[] arry) {
 		int times = findTimes(arry);
