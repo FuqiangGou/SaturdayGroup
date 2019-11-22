@@ -1,3 +1,4 @@
+//c语言实现线性表的初始化，插入元素，删除元素，查找元素，输出元素，有序插入
 #include <stdio.h>
 #define MaxSize 100
 #define ElementType int
