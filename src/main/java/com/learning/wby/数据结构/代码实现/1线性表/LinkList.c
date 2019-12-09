@@ -4,7 +4,7 @@
 //
 //  Created by wby on 2019/11/20.
 //  Copyright © 2019 wby. All rights reserved.
-//  单线性链表
+//  单向线性链表
 //
 
 #include <stdio.h>
@@ -25,6 +25,14 @@ void print(LinkList list);
 void INSERTLINK1(ElementType item,LinkList list);
 //指定位置插入元素item
 void INSERTLINK3(LinkList list,int i,ElementType item);
+//销毁线性链表
+LinkList DESTORYLINKLIST(LinkList list);
+//销毁线性链表中相同元素
+LinkList DELETESAMEELEMENT(LinkList list);
+//移动最小值结点到链表表头
+LinkList removemin(LinkList list);
+//移动最大值结点到链表表头
+LinkList removemax(LinkList list);
 int main(){
     LinkList list;
     ElementType item;
@@ -33,13 +41,21 @@ int main(){
     int length = LENGTH(list);
     printf("链表长度为%d\n",length);
     print(list);
-    printf("请输入想插入到链表头的数据");
-    scanf("%d",&item);
-    INSERTLINK1(item,list);
-    print(list);
-    printf("在第2个结点后插入数据\n");
-    INSERTLINK3(list,2,item);
-    print(list);
+//    printf("请输入想插入到链表头的数据");
+//    scanf("%d",&item);
+//    INSERTLINK1(item,list);
+//    print(list);
+//    printf("在第2个结点后插入数据\n");
+//    INSERTLINK3(list,2,item);
+//    print(list);
+//    printf("destory list\n");
+//    print(DESTORYLINKLIST(list));
+//    printf("销毁线性链表中相同的元素\n");
+//    print(DELETESAMEELEMENT(list));
+//    printf("将值最小元素移到链表最前面\n");
+//    print(removemin(list));
+    printf("移动最大元素到链表结尾");
+    print(removemax(list));
     
 }
 //创建线性链表
@@ -82,6 +98,7 @@ void print(LinkList list){
         printf("%d\t",p->data);
         p=p->link;
     }
+    printf("\n");
 }
 //第一个结点前插入数据项item的新结点
 void INSERTLINK1(ElementType item,LinkList list){
@@ -165,4 +182,88 @@ LinkList SEARCHNODE(LinkList list ,int k){
         q=q->link;
     }//p指向链表最后那个结点，q指向倒数第k个结点
     return q;//给出链表倒数第k个结点（q指向的那个结点）的地址
+}
+//销毁线性链表
+LinkList DESTORYLINKLIST(LinkList list){
+    //list存放链表的首地址
+    LinkList p=list;
+    while(list!= NULL){
+        list=list->link;//保存下一个链结点的位置
+        free(p);//删除并释放p指的当前结点
+        p=list;//下一链结点称为当前结点
+    }
+    return list;
+}
+//销毁线性链表中相同元素
+LinkList DELETESAMEELEMENT(LinkList list){
+    LinkList p,r,q;
+    p=list;
+    while(p!=NULL){
+        r=p;
+        q=p->link;
+        while(q!=NULL){
+            if(p->data == q->data){
+                r->link = q->link;
+                free(q);
+                q=r->link;
+            }else{
+                r=q;
+                q=r->link;
+            }
+        }
+        p=p->link;
+    }
+    return list;
+}
+//移动最小值结点到链表表头
+LinkList removemin(LinkList list){
+    LinkList p,q,s,r;
+    q=list;
+    p=list->link;
+    r=list;
+    //找到值最小的那个结点
+    while(p!=NULL){
+        if(q->data > p->data){
+            s=r;
+            q=p;
+        }
+        r=p;
+        p=p->link;
+    }
+    //若值最小结点不是链表最前面的那个点
+    if(q!=list){
+        s->link = q->link;
+        q->link=list;
+        list = q;
+    }
+    return list;
+}
+//移动最大值结点到链表表头
+LinkList removemax(LinkList list){
+    LinkList p,q,s,r;
+    q=list;
+    p=list->link;
+    r=list;
+    //寻找值最大的那个结点
+    while(p!=NULL){
+        if(q->data < p->data){
+            s=r;
+            q=p;
+        }
+        r=p;
+        p=p->link;
+    }
+    //若值最大结点不是链表结尾的那个点
+    if(q!=r){
+        if(q!=list){
+            //如果最大值不是链表头结点
+            s->link = q->link;
+        }else{
+            //如果最大值是链表头结点
+            list = q->link;
+        }
+        r->link=q;
+        q->link=NULL;
+    }
+    return list;
 }

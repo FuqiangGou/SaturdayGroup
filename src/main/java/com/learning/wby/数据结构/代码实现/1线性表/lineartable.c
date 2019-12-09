@@ -1,4 +1,11 @@
-//c语言实现线性表的初始化，插入元素，删除元素，查找元素，输出元素，有序插入
+//
+//  LinkList.c
+//  LinkList
+//
+//  Created by wby on 2019/11/20.
+//  Copyright © 2019 wby. All rights reserved.
+//  顺序表
+//
 #include <stdio.h>
 #define MaxSize 100
 #define ElementType int
@@ -7,39 +14,50 @@ typedef struct {
     int length;
 }Lineartable;
 Lineartable* INITAL();
+//插入法插入元素到线性表中
 void INSERT(ElementType x,int i,Lineartable *lineartable);
+//查找元素所在顺序表中位置
 int LOCATE(Lineartable *lineartable,int item);
+//线性表中指定位置插入元素
 int INSERTITEM(Lineartable *lineartable,int i,int item);
 void print(Lineartable *lineartable);
+//删除元素，删除第i个位置的元素
 int DELETE(Lineartable *lineartable,int i);
+//插入元素到有序线性表中
 void INSERTSORT(Lineartable *lineartable,ElementType item);
-
+//通过键盘建立n个不重复元素的顺序表
+void BUILDLIST(int A[],int n);
+//删除数组中重复元素
+void del(ElementType A[],int n);
 int main()
 {
-    ElementType A[]={1,2,3};
-    //定义一个线性表
-    Lineartable *lineartable;
-    //初始化一个线性表
-    lineartable = INITAL();
-    //插入法插入元素到线性表中
-    for(int i=0;i<10;i++){
-        INSERT(i,i,lineartable);
-    }
-    //查找元素所在线性表位置
-    int result = LOCATE(lineartable,2);
-    printf("元素2所在位置为：%d\n",result);
-    //线性表中指定位置插入元素
-    printf("在第3个位置上插入元素12后元素显示如下\n：");
-    INSERTITEM(lineartable,3,12);
-    print(lineartable);
-    //删除指定位置线性表元素
-    printf("删除第3个位置元素后显示如下\n");
-    DELETE(lineartable,3);
-    print(lineartable);
-    //将新数据插入到有序的线性表中
-    printf("将新数据7插入到有序的顺序表中,并输出元素\n");
-    INSERTSORT(lineartable,7);
-    print(lineartable);
+    ElementType A[]={1,2,3,3,4,5,6,7,7,8};
+    del(A,10);
+//    //定义一个线性表
+//    Lineartable *lineartable;
+//    //初始化一个线性表
+//    lineartable = INITAL();
+//    //插入法插入元素到线性表中
+//    for(int i=0;i<10;i++){
+//        INSERT(i,i,lineartable);
+//    }
+//    //查找元素所在线性表位置
+//    int result = LOCATE(lineartable,2);
+//    printf("元素2所在位置为：%d\n",result);
+//    //线性表中指定位置插入元素
+//    printf("在第3个位置上插入元素12后元素显示如下\n：");
+//    INSERTITEM(lineartable,3,12);
+//    print(lineartable);
+//    //删除指定位置线性表元素
+//    printf("删除第3个位置元素后显示如下\n");
+//    DELETE(lineartable,3);
+//    print(lineartable);
+//    //将新数据插入到有序的线性表中
+//    printf("将新数据7插入到有序的顺序表中,并输出元素\n");
+//    INSERTSORT(lineartable,7);
+//    print(lineartable);
+//    int b[] = {};
+//    BUILDLIST(b,3);
 };
 //初始化线性表
 Lineartable* INITAL(){
@@ -123,5 +141,53 @@ void INSERTSORT(Lineartable *lineartable,ElementType item){
         }
         lineartable->data[i]=item;
         lineartable->length ++;
+    }
+}
+//通过键盘建立n个不重复元素的顺序表
+void BUILDLIST(int A[],int n){
+    int flag = 0,j,i=0;
+    printf("input the first data\n");
+    scanf("%d",&A[0]);
+    while(i<n-1){
+        printf("input data\n");
+        scanf("%d",&A[i+1]);
+        for (j=0; j<=i; j++) {
+            if(A[j] == A[i+1]){
+                flag =1;
+                break;
+            }
+            
+        }
+        if(!flag){
+            i++;
+        }else{
+            flag = 0;
+        }
+    }
+}
+//删除有序数组中重复元素
+void del(ElementType A[],int n){
+    int i=0,j;
+    while(i<n-1){
+        if(A[i]!=A[i+1]){//比较相邻元素
+            i++;
+        }else{
+            for(j=i+1;j<n;j++){//删除元素，元素左移
+                A[j-1]=A[j];
+            }
+            n--;
+        }
+    }
+}
+//删除有序数组中重复元素（升级版）
+void del1(ElementType A[],int n){
+    int i=0,k=0;
+    if(n>1){
+        for(int i=0;i<n;i++){
+            if(A[i]!=A[k]){//当a[i]画与a[k]不相等时
+                A[++k]=A[i];
+            }
+        }
+        n=k+1;//得到删除后的数组表长
     }
 }
